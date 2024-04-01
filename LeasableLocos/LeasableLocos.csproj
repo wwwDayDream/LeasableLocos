@@ -1,0 +1,99 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net48</TargetFramework>
+        <GameDir>C:\SteamLibrary\steamapps\common\Derail Valley</GameDir>
+        <LangVersion>12</LangVersion>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2" PrivateAssets="All"/>
+
+        <Reference Include="Assembly-CSharp" Publicize="True">
+            <HintPath>$(GameDir)\DerailValley_Data\Managed\Assembly-CSharp.dll</HintPath>
+        </Reference>
+        <Reference Include="DV.ThingTypes" Publicize="True">
+            <HintPath>$(GameDir)\DerailValley_Data\Managed\DV.ThingTypes.dll</HintPath>
+        </Reference>
+        <Reference Include="DV.CharacterController" Publicize="True">
+            <HintPath>$(GameDir)\DerailValley_Data\Managed\DV.CharacterController.dll</HintPath>
+        </Reference>
+        <Reference Include="DV.Interaction" Publicize="True">
+            <HintPath>$(GameDir)\DerailValley_Data\Managed\DV.Interaction.dll</HintPath>
+        </Reference>
+        <Reference Include="DV.WeatherSystem" Publicize="True">
+            <HintPath>$(GameDir)\DerailValley_Data\Managed\DV.WeatherSystem.dll</HintPath>
+        </Reference>
+        <Reference Include="DV.Utils" Publicize="True">
+            <HintPath>$(GameDir)\DerailValley_Data\Managed\DV.Utils.dll</HintPath>
+        </Reference>
+        <Reference Include="DV.BrakeSystem" Publicize="True">
+            <HintPath>$(GameDir)\DerailValley_Data\Managed\DV.BrakeSystem.dll</HintPath>
+        </Reference>
+        <Reference Include="DV.Common" Publicize="True">
+            <HintPath>$(GameDir)\DerailValley_Data\Managed\DV.Common.dll</HintPath>
+        </Reference>
+        <Reference Include="DV.UserManagement" Publicize="True">
+            <HintPath>$(GameDir)\DerailValley_Data\Managed\DV.UserManagement.dll</HintPath>
+        </Reference>
+        <Reference Include="DV.Inventory" Publicize="True">
+            <HintPath>$(GameDir)\DerailValley_Data\Managed\DV.Inventory.dll</HintPath>
+        </Reference>
+        <Reference Include="DV.Localization" Publicize="True">
+            <HintPath>$(GameDir)\DerailValley_Data\Managed\DV.Localization.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine">
+            <HintPath>$(GameDir)\DerailValley_Data\Managed\UnityEngine.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.TextMeshPro">
+            <HintPath>$(GameDir)\DerailValley_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.Serialization">
+            <HintPath>$(GameDir)\DerailValley_Data\Managed\Unity.Serialization.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.JSONSerializeModule">
+            <HintPath>$(GameDir)\DerailValley_Data\Managed\UnityEngine.JSONSerializeModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UI">
+            <HintPath>$(GameDir)\DerailValley_Data\Managed\UnityEngine.UI.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.IMGUIModule">
+            <HintPath>$(GameDir)\DerailValley_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.CoreModule">
+            <HintPath>$(GameDir)\DerailValley_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.PhysicsModule">
+            <HintPath>$(GameDir)\DerailValley_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+        </Reference>
+        <Reference Include="Newtonsoft.JSON">
+            <HintPath>$(GameDir)\DerailValley_Data\Managed\Newtonsoft.JSON.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityModManager">
+            <HintPath>$(GameDir)\DerailValley_Data\Managed\UnityModManager\UnityModManager.dll</HintPath>
+        </Reference>
+        <Reference Include="0Harmony">
+            <HintPath>$(GameDir)\DerailValley_Data\Managed\UnityModManager\0Harmony.dll</HintPath>
+        </Reference>
+        <Reference Include="CareerManagerAPI">
+            <HintPath>$(GameDir)\Mods\CareerManagerAPI\CareerManagerAPI.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="Info.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="LeaseTerms.txt"/>
+    </ItemGroup>
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Exec Command="xcopy /Y &quot;$(OutputPath)$(AssemblyName).dll&quot; &quot;$(GameDir)\Mods\$(ProjectName)\&quot;"/>
+        <Exec Command="xcopy /Y &quot;$(OutputPath)Info.json&quot; &quot;$(GameDir)\Mods\$(ProjectName)\&quot;"/>
+        <Exec ContinueOnError="true" Command="taskkill /f /im DerailValley.exe"/>
+    </Target>
+</Project>
