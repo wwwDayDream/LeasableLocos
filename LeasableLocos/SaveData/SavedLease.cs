@@ -44,7 +44,7 @@ public class SavedLease
 
     public StationController OriginStation => StationController.GetStationByYardID(StationID);
 
-    public List<TrainCar> LocosInLivery => CarSpawner.Instance.AllLocos.Where(loco => LocosID.Contains(loco.ID)).ToList();
+    public List<TrainCar> LocosInLivery => CarSpawner.Instance.AllCars.Where(loco => LocosID.Contains(loco.ID)).ToList();
 
     public bool NotTooManyTerminated => SaveDataManager.NotTooManyTerminated(StationID);
     public bool LocosInGoodHealth => LocosInLivery
@@ -100,7 +100,8 @@ public class SavedLease
     public void Terminate()
     {
         IsTerminated = true;
-        SingletonBehaviour<CarSpawner>.Instance.DeleteTrainCars(LocosInLivery, true);
+        Plugin.Logger.Log(LocosInLivery.Count.ToString());
+        SingletonBehaviour<CarSpawner>.Instance.DeleteTrainCars(LocosInLivery, false);
         UpdateDebt();
     }
     public void UpdateDebt(double amount = 0d)

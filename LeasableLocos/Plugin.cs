@@ -60,9 +60,9 @@ internal static class Plugin
         GUILayout.Label("Days Lease is Unpaid before Overdue (00)");
         if (int.TryParse(GUILayout.TextField(Config.DaysUnpaidToOverdue.ToString(), 10), out var newOverdue))
             Config.DaysUnpaidToOverdue = newOverdue;
-        GUILayout.Label("Application Cost (00.00)");
-        if (double.TryParse(GUILayout.TextField(Config.ApplicationFee.ToString("F2"), 10), out var newFee))
-            Config.ApplicationFee = newFee;
+        GUILayout.Label("Percentage of DayToDay for Application Cost (00.00)");
+        if (double.TryParse(GUILayout.TextField(Config.ApplicationPercentage.ToString("F2"), 10), out var newFee))
+            Config.ApplicationPercentage = newFee;
         GUILayout.Label("Maximum Terminated Leases (0)");
         if (int.TryParse(GUILayout.TextField(Config.MaxTerminatedLeases.ToString("F0"), 10), out var newMaxTerm))
             Config.MaxTerminatedLeases = newMaxTerm;

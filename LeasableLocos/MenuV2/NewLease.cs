@@ -72,10 +72,11 @@ public class NewLease : ModularScreen
                 } else
                 {
                     var dayToDay = DayToDayLiveryCost(selection.SpawnCars);
-                    PayScreen.Title = $"Pay ${Config.ApplicationFee} application fee?";
+                    var amountToPay = Config.ApplicationPercentage / 100f * dayToDay;
+                    PayScreen.Title = $"Pay ${amountToPay:F2} initial fee?";
                     PayScreen.ParagraphInfo = $"Plus a further ${dayToDay:F2} each day until termination? Termination may only occur with less than " +
                                               $"{Config.MaxTerminatedLeases} open terminated leases and the engine must be in good condition.";
-                    PayScreen.Pay(Config.ApplicationFee, () =>
+                    PayScreen.Pay(Config.ApplicationPercentage / 100f * dayToDay, () =>
                     {
                         if (TrySpawnLivery(selection.SpawnCars, out var cars))
                         {
@@ -89,7 +90,7 @@ public class NewLease : ModularScreen
                         InfoScreen.Display("Failed",
                             "Due to the rail yard being full we can't currently service your application. Sorry for the inconvenience.", this);
                         
-                        LeaseScreen.FeesPayingScreen.cashReg.DepositedCash = Config.ApplicationFee;
+                        LeaseScreen.FeesPayingScreen.cashReg.DepositedCash = amountToPay;
                         LeaseScreen.FeesPayingScreen.cashReg.ClearCurrentTransaction();
                         return true;
                     });

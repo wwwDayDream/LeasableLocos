@@ -7,7 +7,7 @@ internal static class Config
 {
     private static string ConfigFile(string dir) => Path.Combine(dir, "config.dat");
 
-    internal static double ApplicationFee = 99.99;
+    internal static double ApplicationPercentage = 100;
     internal static double EnginePercentageOfFullUnitPrice = 0.009612;
     internal static double TerminatePrePayOffPercentage = 0.2;
     internal static double InGoodHealthPercentage = 0.9;
@@ -22,7 +22,7 @@ internal static class Config
 
         try
         {
-            ApplicationFee = reader.ReadDouble();
+            ApplicationPercentage = reader.ReadDouble();
             EnginePercentageOfFullUnitPrice = reader.ReadDouble();
             TerminatePrePayOffPercentage = reader.ReadDouble();
             InGoodHealthPercentage = reader.ReadDouble();
@@ -40,7 +40,7 @@ internal static class Config
     internal static void Save(string path)
     {
         using var writer = new BinaryWriter(File.OpenWrite(ConfigFile(path)));
-        writer.Write(ApplicationFee);
+        writer.Write(ApplicationPercentage);
         writer.Write(EnginePercentageOfFullUnitPrice);
         writer.Write(TerminatePrePayOffPercentage);
         writer.Write(InGoodHealthPercentage);
