@@ -1,7 +1,7 @@
 {
   "Id": "LeasableLocos",
   "DisplayName": "Leasable Locos",
-  "Version": "0.1.3",
+  "Version": "0.1.4",
   "Author": "wwwDayDream",
   "AssemblyName": "LeasableLocos.dll",
   "EntryMethod": "LeasableLocos.Plugin.Load",

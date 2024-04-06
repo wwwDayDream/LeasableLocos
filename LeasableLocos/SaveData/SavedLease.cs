@@ -54,7 +54,7 @@ public class SavedLease
         .All(loco => loco.logicCar.CurrentTrack.ID.yardId == StationID);
 
     public bool LocosBrakeOn => LocosInLivery
-        .Any(loco => loco.brakeSystem.handbrakePosition >= 0.75f);
+        .All(loco => !loco.brakeSystem.hasHandbrake || loco.brakeSystem.handbrakePosition >= 0.75f);
 
 
     public bool PastDue => IncurredDebt > DailyRate * Config.DaysUnpaidToOverdue;
