@@ -39,7 +39,7 @@ public class NewLease : ModularScreen
         LeaseScreen.Scroller?.SetOptions(CachedLiveries.Select<(string LocalizedName, List<TrainCarLivery> SpawnCars), 
             (LinesScrollerScreen.OptionParser?, LinesScrollerScreen.OptionParser?, LinesScrollerScreen.CanEnter?)>(tuple => (
             option => option.text = tuple.LocalizedName, 
-            option => option.text = $"${DayToDayLiveryCost(tuple.SpawnCars):F2}", 
+            option => option.text = $"${DayToDayLiveryCost(tuple.SpawnCars):F2}",
             () => true 
         )));
     }
@@ -60,7 +60,7 @@ public class NewLease : ModularScreen
                 LeaseScreen.Scroller?.Down();
                 break;
             case InputAction.Confirm:
-                var notLicensedForAll = !selection.SpawnCars.All(liv => LicenseManager.Instance.IsLicensedForCar(liv));
+                var notLicensedForAll = !LicensedForCars(selection.SpawnCars);
                 var tooManyTermd = !SaveDataManager.NotTooManyTerminated(LeaseScreen.StationController.stationInfo.YardID);
                 var someOverdue = !SaveDataManager.NoneOverdue(LeaseScreen.StationController.stationInfo.YardID);
                 if (notLicensedForAll || tooManyTermd || someOverdue)
@@ -105,12 +105,15 @@ public class NewLease : ModularScreen
                 break;
         }
     }
+
+    private static bool LicensedForCars(IEnumerable<TrainCarLivery> cars) => 
+        cars.All(c => LicenseManager.Instance.IsLicensedForCar(c));
     
     private bool TrySpawnLivery(List<TrainCarLivery> liveries, out List<TrainCar>? SpawnedCars)
     {
         foreach (var locoSpawner in LeaseScreen.StationLocoSpawners)
         {
-            var carsOnTrack = locoSpawner.locoSpawnTrack.logicTrack.GetCarsFullyOnTrack();
+            var carsOnTrack = locoSpawner.locoSpawnTrack.LogicTrack().GetCarsFullyOnTrack();
             if (carsOnTrack.Count != 0 && carsOnTrack.Any(car => CarTypes.IsLocomotive(car.carType)))
                 continue;
 

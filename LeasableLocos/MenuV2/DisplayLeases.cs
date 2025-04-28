@@ -23,44 +23,55 @@ public class DisplayLeases : ModularScreen
     private LeaseScreen LeaseScreen { get; }
     private ManageLease LeaseManager { get; set; } = null!;
     private List<(SavedLease lease, StationController)> Leases { get; set; } = null!;
-    private bool InterStationList { get; set; }
     
-    public void ShowLeases(bool isInterStationList = false)
+    public void ShowLeases()
     {
-        InterStationList = isInterStationList;
         SwitchToScreen(this);
     }
     
     private void OnShow(IModularScreen? previous)
     {
-        LeaseScreen.Title.text = "<u>Active Leases</u>";
-        LeaseScreen.AltSubtitle.text = "DUE";
-        LeaseScreen.Subtitle.text = !InterStationList ? LeaseScreen.StationCompanyName ?? "LOCAL-STATION" : "INTER-STATION";
-        LeaseScreen.Subtitle.color = !InterStationList ? LeaseScreen.StationColor ?? LeaseScreen.Subtitle.color : Color.blue * 0.7f + Color.yellow * 0.2f;
+        LeaseScreen.Title!.text = "<u>Active Leases</u>";
+        LeaseScreen.AltSubtitle!.text = "DUE";
+        LeaseScreen.Subtitle!.text = $"[<color=#{ColorUtility.ToHtmlStringRGB(LeaseScreen.StationColor!.Value)}>" +
+            $"{LeaseScreen.StationController.stationInfo.YardID,3}</color>] = {LeaseScreen.StationName}";
 
-        Leases = (InterStationList ? 
-                SaveDataManager.AntiSavedLeases(LeaseScreen.StationController.stationInfo.YardID) : 
-                SaveDataManager.LocalSavedLeases(LeaseScreen.StationController.stationInfo.YardID))
-            .Select(lease => (lease, StationController.GetStationByYardID(lease.StationID)))
-            .OrderBy(tup => tup.Item2.stationInfo.Name).ToList();
+        Leases = [];
+        var options = new List<(LinesScrollerScreen.OptionParser?, LinesScrollerScreen.OptionParser?, LinesScrollerScreen.CanEnter?)>();
+        foreach (var localSavedLease in SaveDataManager.LocalSavedLeases(LeaseScreen.StationController.stationInfo.YardID))
+        {
+            var stationController = localSavedLease.OriginStation;
+            Leases.Add((localSavedLease, stationController));
+            options.Add(LeaseToOption(stationController, localSavedLease));
+        }
+        foreach (var otherLease in SaveDataManager.AntiSavedLeases(LeaseScreen.StationController.stationInfo.YardID).OrderBy(l => l.OriginStation.stationInfo.Name))
+        {
+            var stationController = StationController.GetStationByYardID(otherLease.StationID);
+            Leases.Add((otherLease, stationController));
+            options.Add(LeaseToOption(stationController, otherLease));
+        }
         
-        LeaseScreen.Scroller?.SetOptions(Leases
-            .Select<(SavedLease lease, StationController station), (LinesScrollerScreen.OptionParser?, LinesScrollerScreen.OptionParser?, LinesScrollerScreen.CanEnter?)>(leaseInfo => (
-                tmPRO =>
+        LeaseScreen.Scroller?.SetOptions(options);
+
+        return;
+        (LinesScrollerScreen.OptionParser?, LinesScrollerScreen.OptionParser?, LinesScrollerScreen.CanEnter?) LeaseToOption(StationController stationController, SavedLease lease)
+        {
+            return (option =>
                 {
-                    tmPRO.text = (InterStationList ? 
-                        $"<color=#{ColorUtility.ToHtmlStringRGB(leaseInfo.station.stationInfo.StationColor)}>{leaseInfo.station.stationInfo.YardID,3}</color> " 
-                        : string.Empty) + leaseInfo.lease.AggregatedIDs;
+                    option.text =
+                        $"[<color=#{ColorUtility.ToHtmlStringRGB(stationController.stationInfo.StationColor)}>" +
+                        $"{stationController.stationInfo.YardID,3}</color>] {lease.AggregatedIDs}";
                 },
-                tmPRO =>
+                option =>
                 {
-                    var targetColor = leaseInfo.lease.PastDue ? 
+                    var targetColor = lease.PastDue ? 
                         Color.red * 0.7f + Color.cyan * 0.2f : 
-                        leaseInfo.lease.IsTerminated ? 
+                        lease.IsTerminated ? 
                             Color.green * 0.7f + Color.magenta * 0.2f : Color.white * 0.7f;
-                    tmPRO.text = $"${leaseInfo.lease.IncurredDebt:F2} " + $"<color=#{ColorUtility.ToHtmlStringRGB(targetColor)}>" +
-                                 (leaseInfo.lease.PastDue ? "P" : leaseInfo.lease.IsTerminated ? "T" : "O") + "</color>";
-                }, null)));
+                    option.text = $"${lease.IncurredDebt:F2} " + $"<color=#{ColorUtility.ToHtmlStringRGB(targetColor)}>" +
+                                  (lease.PastDue ? "P" : lease.IsTerminated ? "T" : "O") + "</color>";
+                }, null);
+        }
     }
     private void OnHide(IModularScreen? next)
     {

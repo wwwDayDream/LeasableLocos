@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>net48</TargetFramework>
-        <GameDir>C:\SteamLibrary\steamapps\common\Derail Valley</GameDir>
+        <GameDir>D:\Program Files (x86)\Steam\steamapps\common\Derail Valley</GameDir>
         <LangVersion>12</LangVersion>
         <Nullable>enable</Nullable>
     </PropertyGroup>
@@ -42,6 +42,9 @@
         </Reference>
         <Reference Include="DV.Localization" Publicize="True">
             <HintPath>$(GameDir)\DerailValley_Data\Managed\DV.Localization.dll</HintPath>
+        </Reference>
+        <Reference Include="DV.RailTrack" Publicize="True">
+            <HintPath>$(GameDir)\DerailValley_Data\Managed\DV.RailTrack.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine">
             <HintPath>$(GameDir)\DerailValley_Data\Managed\UnityEngine.dll</HintPath>

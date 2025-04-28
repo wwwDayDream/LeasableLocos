@@ -4,8 +4,8 @@ using LeasableLocos.SaveData;
 
 namespace LeasableLocos.Patches;
 
-[HarmonyPatch(typeof(WeatherDriver), nameof(WeatherDriver.Awake))]
-public static class WeatherDriverAwake
+[HarmonyPatch(typeof(WeatherDriver), nameof(WeatherDriver.Start))]
+public static class WeatherDriverStart
 {
     public static void Postfix(WeatherDriver __instance)
     {

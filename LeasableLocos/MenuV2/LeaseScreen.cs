@@ -26,7 +26,7 @@ public class LeaseScreen : ModularScreenHost
         Clear += OnClear;
     }
 
-    public StationTeleporter StationTeleporter { get; set; } = null!;
+    public StationFastTravelDestination StationTeleporter { get; set; } = null!;
     public CareerManagerMainScreen MainScreen { get; private set; } = null!;
     public CareerManagerFeePayingScreen FeesPayingScreen { [UsedImplicitly] get; private set; } = null!;
     public (TextMeshPro lhs, TextMeshPro rhs)[] Lines { get; private set; } = null!;
@@ -43,7 +43,7 @@ public class LeaseScreen : ModularScreenHost
         MainScreen = transform.parent.gameObject.GetComponentInChildren<CareerManagerMainScreen>();
         FeesPayingScreen = transform.parent.gameObject.GetComponentInChildren<CareerManagerFeePayingScreen>();
         StationTeleporter =
-            StationTeleporter.GetClosestStationTeleporter(FindObjectsOfType<StationTeleporter>().ToList(), gameObject.transform.position);
+            StationFastTravelDestination.GetClosestStationTeleporter(FindObjectsOfType<StationFastTravelDestination>().ToList(), gameObject.transform.position);
 
         SetupTMPros();
         
@@ -79,8 +79,7 @@ public class LeaseScreen : ModularScreenHost
 
 
     public static readonly string[] MainOptions = [
-        "INTER-STATION LEASES",
-        "LOCAL LEASES",
+        "LEASES",
         "NEW LEASE"
     ];
     
@@ -119,10 +118,10 @@ public class LeaseScreen : ModularScreenHost
             case InputAction.Down:
                 Scroller?.Down();
                 break;
-            case InputAction.Confirm when Scroller is { SelectedIndex: 0 } or { SelectedIndex: 1 }:
-                LeasesScreen.ShowLeases(Scroller.SelectedIndex == 0);
+            case InputAction.Confirm when Scroller is { SelectedIndex: 0 }:
+                LeasesScreen.ShowLeases();
                 break;
-            case InputAction.Confirm when Scroller is {SelectedIndex: 2}:
+            case InputAction.Confirm when Scroller is {SelectedIndex: 1}:
                 SwitchToScreen(NewLeaseScreen);
                 break;
             case InputAction.Cancel:
