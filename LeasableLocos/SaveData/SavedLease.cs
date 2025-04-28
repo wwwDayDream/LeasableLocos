@@ -97,12 +97,13 @@ public class SavedLease
         return lease;
     }
 
-    public void Terminate()
+    public void Terminate(bool delete = true)
     {
         IsTerminated = true;
-        Plugin.Logger.Log(LocosInLivery.Count.ToString());
-        SingletonBehaviour<CarSpawner>.Instance.DeleteTrainCars(LocosInLivery, false);
+        Plugin.Logger?.Log(LocosInLivery.Count.ToString());
         UpdateDebt();
+        if (!delete) return;
+        SingletonBehaviour<CarSpawner>.Instance.DeleteTrainCars(LocosInLivery, false);
     }
     public void UpdateDebt(double amount = 0d)
     {

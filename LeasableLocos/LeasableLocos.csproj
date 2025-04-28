@@ -79,8 +79,23 @@
         <Reference Include="0Harmony">
             <HintPath>$(GameDir)\DerailValley_Data\Managed\UnityModManager\0Harmony.dll</HintPath>
         </Reference>
+        
+        
         <Reference Include="CareerManagerAPI">
             <HintPath>$(GameDir)\Mods\CareerManagerAPI\CareerManagerAPI.dll</HintPath>
+        </Reference>
+
+        <Reference Include="DVLangHelper.Runtime">
+            <HintPath>$(GameDir)\Mods\DVLangHelper\DVLangHelper.Runtime.dll</HintPath>
+        </Reference>
+        <Reference Include="DVLangHelper.Data">
+            <HintPath>$(GameDir)\Mods\DVLangHelper\DVLangHelper.Data.dll</HintPath>
+        </Reference>
+        <Reference Include="CommsRadioApi">
+            <HintPath>$(GameDir)\Mods\Comms Radio Api\CommsRadioApi.dll</HintPath>
+        </Reference>
+        <Reference Include="LocoOwnership" Publicize="true">
+            <HintPath>$(GameDir)\Mods\Loco Ownership\LocoOwnership.dll</HintPath>
         </Reference>
     </ItemGroup>
 

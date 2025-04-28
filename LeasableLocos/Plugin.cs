@@ -1,13 +1,10 @@
-﻿using System.Globalization;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using HarmonyLib;
 using JetBrains.Annotations;
 using UnityModManagerNet;
-using CareerManagerAPI;
-using DV;
 using DV.ServicePenalty.UI;
-using DV.Utils;
 using LeasableLocos.MenuV2;
-using LeasableLocos.SaveData;
 using UnityEngine;
 
 namespace LeasableLocos;
@@ -16,7 +13,7 @@ namespace LeasableLocos;
 internal static class Plugin
 {
     internal static UnityModManager.ModEntry.ModLogger? Logger { get; private set; }
-    private static Harmony? Patcher { get; set; }
+    internal static Harmony? Patcher { get; set; }
 
     [UsedImplicitly]
     internal static bool Load(UnityModManager.ModEntry modEntry)
@@ -37,8 +34,27 @@ internal static class Plugin
                 after: CareerManagerLocalization.LICENSES);
         };
 
+        if (!IsLocoOwnershipVersionEnabled()) return true;
+
+        Task.Run(async () =>
+        {
+            if (!TryGetLocoOwnership(out var locoOwnership)) return;
+            while (!locoOwnership!.Loaded)
+                await Task.Delay(1000);
+            
+            LocoOwnershipCompatibility.HandleLocoOwnershipCompatibility();
+        });
+
         return true;
     }
+
+    private static bool IsLocoOwnershipVersionEnabled() =>
+        TryGetLocoOwnership(out _);
+
+    private static bool TryGetLocoOwnership(out UnityModManager.ModEntry? locoOwnership) =>
+        (locoOwnership = UnityModManager.modEntries.FirstOrDefault(entry => entry.Info.Id == "LocoOwnership" && entry.Info.Version == "1.4.1")) !=
+        null;
+    
     private static void OnSaveGUI(UnityModManager.ModEntry modEntry)
     {
         Config.Save(modEntry.Path);
