@@ -60,7 +60,7 @@ public class DisplayLeases : ModularScreen
                 {
                     option.text =
                         $"[<color=#{ColorUtility.ToHtmlStringRGB(stationController.stationInfo.StationColor)}>" +
-                        $"{stationController.stationInfo.YardID,3}</color>] {lease.AggregatedIDs}";
+                        $"{stationController.stationInfo.YardID}</color>] {lease.AggregatedIDs}";
                 },
                 option =>
                 {
